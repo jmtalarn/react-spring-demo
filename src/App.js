@@ -1,25 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Spring } from "react-spring/renderprops";
+import PillsBox from "./PillsBox";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Spring
+      from={{ opacity: 0, marginTop: -1000 }}
+      to={{ opacity: 1, marginTop: 0 }}
+      config={{ delay: 1000 }}
+    >
+      {props => (
+        <div
+          className="App"
+          style={{
+            width: "100%",
+            height: "100%",
+            textAlign: "center",
+            ...props
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          <h1>This is a react-spring demo</h1>
+
+          <PillsBox />
+        </div>
+      )}
+    </Spring>
   );
 }
 
