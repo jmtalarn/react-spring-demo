@@ -1,53 +1,67 @@
 import React from "react";
 // import { Spring } from "react-spring/renderprops";
 import { useSpring, animated } from "react-spring";
+import { vhToPixel, vwToPixel } from "./utils/tricks";
 
-const Pill = ({ children, index }) => {
+const Pill = ({ children, index, total, color, pillOpened, handlerClick }) => {
+  const initialWidth = vwToPixel(100 / total);
+  const initialLeft = vwToPixel((index * 100) / total);
+  console.log({ index, total, initialWidth, initialLeft, color });
   const defaultStyle = {
-    padding: "0.5rem",
+    // padding: "0.5rem",
+    backgroundColor: color,
     border: "1px solid grey",
-    borderRadius: "10px",
     position: "absolute",
-
-    left: 0,
-    margin: "1rem",
-    cursor: "pointer"
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   };
-  const [pillOpened, openPill] = React.useState(false);
+
   console.log(`Pill ${children} is ${pillOpened ? "open" : "closed"}`);
+
   const contentProps = useSpring({
     //height: pillOpened ? "5rem" : "2rem",
-    height: pillOpened ? "17rem" : "2rem",
-    width: pillOpened ? "35rem" : "3rem",
+    height: pillOpened ? vhToPixel(100) : "28px",
+    width: pillOpened ? vwToPixel(100) : initialWidth,
     // position: pillOpened ? "absolute" : "relative",
-    top: pillOpened ? 0 : (index + 1) * 60,
-    //   left: "0",
-    textAlign: pillOpened ? "left" : "center",
-    //zIndex: pillOpened ? "-1" : "0",
+    borderRadius: pillOpened ? "0px" : "10px",
+    top: pillOpened ? "0px" : vhToPixel(95),
+    left: pillOpened ? "0px" : initialLeft,
+
+    zIndex: pillOpened ? "0" : "1",
     ...defaultStyle
   });
   return (
-    <animated.div onClick={() => openPill(!pillOpened)} style={contentProps}>
+    <animated.div onClick={() => handlerClick()} style={contentProps}>
       {children}
     </animated.div>
   );
 };
 const PillsBox = () => {
-  const numberOfPills = ["Pill A", "Pill B", "Pill C", "Pill D"];
-
+  const numberOfPills = [
+    { title: "Pill A", color: "#F79256" },
+    { title: "Pill B", color: "#FBD1A2" },
+    { title: "Pill C", color: "#7DCFB6" },
+    { title: "Pill D", color: "#1D4E89" }
+  ];
+  const [pillOpened, openPill] = React.useState(null);
   return (
-    <div
-    //   style={{
-    //     width: "100%",
-    //     display: "flex",
-    //     alignItems: "center",
-    //     justifyContent: "space-around"
-    //   }}
-    >
+    <>
       {numberOfPills.map((item, index) => (
-        <Pill key={`${item}`} index={index}>{`${item}`}</Pill>
+        <Pill
+          key={`${item.title}`}
+          index={index}
+          total={numberOfPills.length}
+          color={item.color}
+          pillOpened={pillOpened === index}
+          handlerClick={() => {
+            console.log(`openPill(${index})`);
+            openPill(index);
+          }}
+        >{`${item.title}`}</Pill>
       ))}
-    </div>
+    </>
   );
 };
 
